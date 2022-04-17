@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+  reverse-proxy:
+    image: nginx
+    volumes:
+      - ../nginx:/etc/nginx
+    ports:
+      - 80:80
+
+  backend:
+    build:
+      context: ../backend
+      dockerfile: ../backend/Dockerfile
+    volumes:
+        - ../backend:/var/www
+    ports:
+      - 7878
+    working_dir: /var/www
+    command: cargo run
+
+  frontend:
+    build:
+      context: ../frontend
+      dockerfile: ../frontend/Dockerfile
+    volumes:
+      - ../frontend:/app
+    ports:
+      - 3000
+    working_dir: /app
+    command: npm run dev
