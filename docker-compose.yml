@@ -4,16 +4,16 @@ services:
   reverse-proxy:
     image: nginx
     volumes:
-      - ../nginx:/etc/nginx
+      - ./nginx:/etc/nginx
     ports:
       - 80:80
 
   backend:
     build:
-      context: ../backend
-      dockerfile: ../backend/Dockerfile
+      context: ./backend
+      dockerfile: ./backend/Dockerfile
     volumes:
-        - ../backend:/var/www
+        - ./backend:/var/www
     ports:
       - 7878
     working_dir: /var/www
@@ -21,10 +21,10 @@ services:
 
   frontend:
     build:
-      context: ../frontend
-      dockerfile: ../frontend/Dockerfile
+      context: ./frontend
+      dockerfile: ./frontend/Dockerfile
     volumes:
-      - ../frontend:/app
+      - ./frontend:/app
     ports:
       - 3000
     working_dir: /app
