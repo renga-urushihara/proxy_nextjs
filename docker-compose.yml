@@ -7,25 +7,30 @@ services:
       - ./nginx:/etc/nginx
     ports:
       - 80:80
+    depends_on:
+      - backend
+      - frontend
 
   backend:
     build:
       context: ./backend
-      dockerfile: ./backend/Dockerfile
+      dockerfile: ./Dockerfile
     volumes:
         - ./backend:/var/www
     ports:
-      - 7878
+      - 8000
     working_dir: /var/www
     command: cargo run
 
   frontend:
     build:
       context: ./frontend
-      dockerfile: ./frontend/Dockerfile
+      dockerfile: ./Dockerfile
     volumes:
       - ./frontend:/app
     ports:
       - 3000
+    depends_on:
+      - backend
     working_dir: /app
     command: npm run dev

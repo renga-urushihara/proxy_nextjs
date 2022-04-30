@@ -2,7 +2,6 @@ import { GetServerSideProps } from "next";
 import Head from "next/head";
 import { getSsrData } from "../client";
 
-// propsの型を定義する
 type Props = {
   title?: string;
   num?: number;

@@ -25,5 +25,5 @@ export function request(
   body: RequestInit["body"]
 ) {
   const url = `${pathname}${query ? `?${query}` : ""}`;
-  return fetch(`http://localhost:8000${url}`, { method, body });
+  return fetch(`http://backend:8000/${url}`, { method, body });
 }

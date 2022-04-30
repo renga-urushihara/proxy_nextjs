@@ -2,6 +2,6 @@ FROM rust:1.56
 
 RUN apt-get update
 
-EXPOSE 7878
+EXPOSE 8000
 
-ENV PORT 7878
+ENV PORT 8000
