@@ -15,11 +15,9 @@ services:
     build:
       context: ./backend
       dockerfile: ./Dockerfile
-    volumes:
-        - ./backend:/var/www
     ports:
       - 8000
-    working_dir: /var/www
+    working_dir: /var/backend
     command: cargo run
 
   frontend:
