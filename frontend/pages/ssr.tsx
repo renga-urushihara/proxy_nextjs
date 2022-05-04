@@ -1,13 +1,14 @@
-import { GetServerSideProps } from "next";
+import { GetServerSidePropsContext, GetServerSidePropsResult } from "next";
 import Head from "next/head";
-import { getSsrData } from "../client";
+import { getSsrData, syncSession } from "../client";
 
 type Props = {
   title?: string;
   num?: number;
+  sessionId: string;
 };
 
-function Ssr({ title, num }: Props) {
+function Ssr({ title, num, sessionId }: Props) {
   return (
     <div>
       <Head>
@@ -17,8 +18,12 @@ function Ssr({ title, num }: Props) {
       </Head>
       <h2>{title}</h2>
       <div>
-        <span>num</span>
-        <span>{num}</span>
+        <h4>num</h4>
+        <div>{num}</div>
+      </div>
+      <div>
+        <h4>sessionId</h4>
+        <div>{sessionId}</div>
       </div>
     </div>
   );
@@ -26,12 +31,16 @@ function Ssr({ title, num }: Props) {
 
 export default Ssr;
 
-export async function getServerSideProps(context: GetServerSideProps) {
+export async function getServerSideProps(
+  context: GetServerSidePropsContext
+): Promise<GetServerSidePropsResult<Props>> {
+  const cookie = await syncSession(context);
   const a = await getSsrData();
   return {
     props: {
       title: a["title"],
       num: Number(a["num"]),
+      sessionId: cookie,
     },
   };
 }
