@@ -1,39 +1,49 @@
 import { GetServerSidePropsContext } from "next/types";
 
+const SERVER_URL = "http://backend:8000";
+
+const COOKIE_PATTERN = /token=([0-9a-z]+);/i;
+
 type ApiPathname = `/${string}`;
 
 type JsonResponse<T> = Promise<T>;
 
-export function getSsrData(): JsonResponse<Record<string, string>> {
-  return get("/ssr", undefined).then((res) => res.json());
+export function getSsrData(
+  context: GetServerSidePropsContext
+): JsonResponse<Record<string, string>> {
+  return get("/ssr", undefined, context).then((res) => res.json());
 }
 
-function get(pathname: ApiPathname, query: string | undefined) {
-  return request("GET", pathname, query, undefined);
-}
-
-function post(
+function get(
   pathname: ApiPathname,
   query: string | undefined,
-  body: RequestInit["body"]
+  context: GetServerSidePropsContext
 ) {
-  return request("POST", pathname, query, body);
+  const cookie = context.req.headers.cookie;
+  return request(
+    "GET",
+    pathname,
+    query,
+    cookie ? { cookie } : undefined,
+    undefined
+  );
 }
 
 export function request(
   method: RequestInit["method"],
   pathname: ApiPathname,
   query: string | undefined,
-  body: RequestInit["body"]
+  headers?: RequestInit["headers"],
+  body?: RequestInit["body"]
 ) {
   const url = `${pathname}${query ? `?${query}` : ""}`;
-  return fetch(`http://backend:8000/${url}`, { method, body });
+  return fetch(`${SERVER_URL}${url}`, { method, headers, body });
 }
 
 export function syncSession(context: GetServerSidePropsContext) {
   const cookieValue = context.req.headers.cookie;
   if (!cookieValue) {
-    return fetch("http://backend:8000/sync_session").then((res) => {
+    return fetch(`${SERVER_URL}/sync_session`).then((res) => {
       const setCookieString = res.headers.get("Set-Cookie");
       if (!setCookieString) {
         throw new Error("Fatal Error: invalid http header");
@@ -51,5 +61,3 @@ export function syncSession(context: GetServerSidePropsContext) {
 function getSessionId(cookieString: string) {
   return COOKIE_PATTERN.exec(cookieString)?.[1] ?? "";
 }
-
-const COOKIE_PATTERN = /token=([0-9a-z]+);/i;

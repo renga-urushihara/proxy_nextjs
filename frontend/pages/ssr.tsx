@@ -29,13 +29,11 @@ function Ssr({ title, num, sessionId }: Props) {
   );
 }
 
-export default Ssr;
-
 export async function getServerSideProps(
   context: GetServerSidePropsContext
 ): Promise<GetServerSidePropsResult<Props>> {
   const cookie = await syncSession(context);
-  const a = await getSsrData();
+  const a = await getSsrData(context);
   return {
     props: {
       title: a["title"],
@@ -44,3 +42,5 @@ export async function getServerSideProps(
     },
   };
 }
+
+export default Ssr;

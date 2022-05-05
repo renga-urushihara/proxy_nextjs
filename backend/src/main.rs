@@ -27,9 +27,9 @@ async fn ssr(session: Session<'_, String>) -> Json<Task> {
         .get()
         .await
         .unwrap()
-        .or(Some(String::from("fa")))
+        .or(Some(String::from("...")))
         .unwrap();
-    session.set(String::from("value")).await.unwrap();
+    session.set("hi".into()).await.unwrap();
     Json(Task {
         title: name,
         num: 20,
